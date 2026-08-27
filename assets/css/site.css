@@ -66,12 +66,12 @@
   --line-2: #D2DAE8;
   --green: #0F6E56;
   --green-bg: #E1F5EE;
-  --mod-1: #185FA5;
-  --mod-1-bg: #E7F0FA;
-  --mod-2: #0F6E56;
-  --mod-2-bg: #E1F5EE;
-  --mod-3: #7A2E4E;
-  --mod-3-bg: #F8E9F0;
+  --mod-1: #1B4FA0;
+  --mod-1-bg: #E7EFFA;
+  --mod-2: #0E6E86;
+  --mod-2-bg: #E0F1F5;
+  --mod-3: #4B3F9E;
+  --mod-3-bg: #ECEAF8;
   --red: #A32020;
   --red-bg: #FDECEC;
 
@@ -81,6 +81,7 @@
   --gap-lg: clamp(1.5rem, 4vw, 2.5rem);
   --section-y: clamp(3rem, 7.5vw, 5rem);
   --tap: 44px;
+  --bar: 4.125rem;
 
   --r-sm: .5rem;
   --r-md: .75rem;
@@ -116,7 +117,9 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
-  scroll-padding-top: 5.5rem;
+  /* Exactly the height of the sticky bar: an anchor lands with the section
+     edge under it, showing no sliver of the previous section. */
+  scroll-padding-top: var(--bar);
 }
 
 body {
@@ -193,6 +196,7 @@ footer :focus-visible { outline-color: var(--sky-2); }
 }
 
 section { padding-block: var(--section-y); }
+section[id] { scroll-margin-top: 0; }
 .alt { background: var(--cloud); }
 .tight { padding-block: clamp(2rem, 5vw, 3rem); }
 
@@ -265,8 +269,8 @@ ul.clean li::before {
 }
 .btn:active { transform: translateY(1px); }
 
-.btn-primary { background: var(--navy); color: #fff; box-shadow: var(--shadow-sm); }
-.btn-primary:hover { background: var(--navy-3); box-shadow: var(--shadow-md); }
+.btn-primary { background: var(--navy); color: #fff; }
+.btn-primary:hover { background: var(--navy-3); }
 
 .btn-light { background: #fff; color: var(--navy); }
 .btn-light:hover { background: #fff; box-shadow: 0 10px 24px -12px rgba(0, 0, 0, .5); }
@@ -306,7 +310,13 @@ ul.clean li::before {
   flex: none;
   border-radius: 50%;
   background: var(--sky-2);
-  box-shadow: 0 0 0 4px rgba(133, 183, 235, .22);
+  box-shadow: 0 0 0 0 rgba(133, 183, 235, .5);
+  animation: pulse 2.4s ease-out infinite;
+}
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(133, 183, 235, .55); }
+  70% { box-shadow: 0 0 0 8px rgba(133, 183, 235, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(133, 183, 235, 0); }
 }
 .enroll-in strong { color: #fff; font-weight: 600; }
 .enroll-in .edition { display: none; }
@@ -465,8 +475,8 @@ ul.clean li::before {
   inset-block-end: 0;
   inset-inline-end: 0;
   z-index: 1;
-  width: min(130%, 38rem);
-  opacity: .14;
+  width: min(135%, 40rem);
+  opacity: .3;
   pointer-events: none;
   -webkit-mask-image: linear-gradient(to bottom, transparent, #000 45%);
   mask-image: linear-gradient(to bottom, transparent, #000 45%);
@@ -686,7 +696,19 @@ ul.clean li::before {
   grid-template-columns: repeat(auto-fit, minmax(min(17rem, 100%), 1fr));
   gap: var(--gap);
 }
-.mods-stack { grid-template-columns: 1fr; }
+.mods-stack { grid-template-columns: 1fr; gap: clamp(1.5rem, 4vw, 2.25rem); }
+.mods-stack .mod {
+  background: none;
+  border: none;
+  border-top: 3px solid var(--blue);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 1.25rem 0 0;
+}
+.mods-stack .mod > p,
+.mods-stack .mod > ul,
+.mods-stack .mod > .callout { max-width: 54rem; }
+.mods-stack .mod-lead { border-top-color: var(--navy); background: none; }
 .mod { padding: clamp(1.25rem, 3.5vw, 1.625rem); }
 .mod .rn {
   font-family: 'Source Serif 4', Georgia, serif;
@@ -696,7 +718,14 @@ ul.clean li::before {
   color: var(--sky-2);
 }
 .mod h3 { font-size: var(--h3); margin: .375rem 0; }
-.mod .meta { font-size: var(--fs-xs); color: var(--ink-3); margin-bottom: .5rem; }
+.mod .meta {
+  font-size: .6875rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: .375rem;
+}
 .mod p { font-size: var(--fs-sm); color: var(--ink-2); margin-bottom: .75rem; }
 .mod ul.clean { font-size: var(--fs-sm); }
 .mod .price {
@@ -705,10 +734,10 @@ ul.clean li::before {
   color: var(--navy);
   font-family: 'Source Serif 4', Georgia, serif;
 }
-.mod-lead { border-left: 4px solid var(--navy); background: #F7F9FC; }
-.mod-day { border-left: 4px solid var(--blue); }
-.mod-day .meta { color: var(--blue); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
-.mod-lead .meta { color: var(--navy); font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+.mod-lead { border-top: 3px solid var(--navy); background: #F8FAFD; }
+.mod-day { border-top: 3px solid var(--blue); }
+.mod-day .meta { color: var(--blue); }
+.mod-lead .meta { color: var(--navy); font-weight: 700; }
 .mod > .callout { margin: .75rem 0 0; }
 
 .people {
@@ -761,8 +790,14 @@ ul.clean li::before {
   grid-template-columns: repeat(auto-fit, minmax(min(11rem, 100%), 1fr));
   gap: .875rem;
 }
-.date-card { padding: .875rem 1rem; border-left: 4px solid var(--blue); }
-.date-card .n { font-size: var(--fs-2xs); color: var(--ink-3); font-weight: 600; }
+.date-card { padding: .875rem 1rem; }
+.date-card .n {
+  font-size: .6875rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
 .date-card .d {
   font-family: 'Source Serif 4', Georgia, serif;
   font-size: var(--fs-md);
@@ -809,10 +844,9 @@ ul.clean li::before {
 
 /* A note inside a module card stays quiet: one hairline, no panel. */
 .mod > .callout {
-  border-top: none;
-  border-left: 2px solid var(--sky-2);
-  padding: .125rem 0 .125rem .875rem;
-  margin: .875rem 0 0;
+  border-top: 1px solid var(--line);
+  padding: .75rem 0 0;
+  margin: 1rem 0 0;
 }
 .mod > .callout p { font-size: var(--fs-sm); color: var(--ink-2); }
 
@@ -841,9 +875,9 @@ ul.clean li::before {
 .mtags .mm-3 b { background: var(--mod-3-bg); color: var(--mod-3); }
 
 /* Module cards carry the same key colour on their rule and numeral. */
-.mod-key-1 { border-left: 4px solid var(--mod-1); }
-.mod-key-2 { border-left: 4px solid var(--mod-2); }
-.mod-key-3 { border-left: 4px solid var(--mod-3); }
+.mod-key-1 { border-top: 3px solid var(--mod-1); }
+.mod-key-2 { border-top: 3px solid var(--mod-2); }
+.mod-key-3 { border-top: 3px solid var(--mod-3); }
 .mod-key-1 .rn { color: var(--mod-1); }
 .mod-key-2 .rn { color: var(--mod-2); }
 .mod-key-3 .rn { color: var(--mod-3); }
@@ -1024,11 +1058,11 @@ ul.clean li::before {
 /* --- 10b. Forms --------------------------------------------------------- */
 .form {
   display: grid;
-  gap: .875rem;
+  gap: .75rem;
   background: #fff;
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
-  padding: clamp(1.25rem, 4vw, 1.75rem);
+  padding: clamp(1.125rem, 3vw, 1.5rem);
   box-shadow: var(--shadow-sm);
   text-align: left;
   color: var(--ink);
@@ -1085,9 +1119,9 @@ ul.clean li::before {
   color: var(--ink-2);
 }
 .consent input[type="checkbox"] {
-  width: 1.5rem;
-  height: 1.5rem;
-  margin-top: .0625rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: .125rem;
   accent-color: var(--navy);
   flex: none;
 }
@@ -1130,7 +1164,7 @@ ul.clean li::before {
 .nl {
   display: grid;
   gap: var(--gap-lg);
-  align-items: center;
+  align-items: start;
 }
 .nl-copy .eyebrow { display: block; color: var(--blue); margin-bottom: .625rem; }
 .nl-copy h2 { font-size: var(--h2); margin-bottom: .625rem; }
@@ -1287,8 +1321,8 @@ footer {
 @media (min-width: 48em) {
   .hero-cta .btn { flex: 0 1 auto; padding-inline: 1.75rem; }
   .hero-art {
-    width: min(66%, 32rem);
-    opacity: .26;
+    width: min(68%, 34rem);
+    opacity: .5;
     -webkit-mask-image: linear-gradient(to right, transparent, #000 55%);
     mask-image: linear-gradient(to right, transparent, #000 55%);
   }
@@ -1299,14 +1333,15 @@ footer {
 
 /* 60em / 960px - the newsletter and enrol blocks split in two */
 @media (min-width: 60em) {
-  .nl { grid-template-columns: 1fr 1fr; }
+  .nl { grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); }
+  .nl .form { max-width: 30rem; }
   .enroll-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(2rem, 4vw, 3rem); }
   .hero-art {
     width: min(58%, 46rem);
-    opacity: .55;
+    opacity: .95;
     inset-inline-end: -1%;
-    -webkit-mask-image: linear-gradient(105deg, transparent 6%, #000 46%);
-    mask-image: linear-gradient(105deg, transparent 6%, #000 46%);
+    -webkit-mask-image: linear-gradient(100deg, transparent 2%, #000 34%);
+    mask-image: linear-gradient(100deg, transparent 2%, #000 34%);
   }
   .bhead .motif { display: block; }
 }
@@ -1318,7 +1353,7 @@ footer {
 
 /* 66em / 1056px - the full desktop navigation fits */
 @media (min-width: 66em) {
-  html { scroll-padding-top: 7rem; }
+  :root { --bar: 4.5625rem; }
   .topbar-in { padding-block: .875rem; }
   .nav-desktop {
     display: flex;
