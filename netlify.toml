@@ -60,9 +60,17 @@
     Cache-Control = "public, max-age=0, must-revalidate"
 
 [[headers]]
-  for = "/materialy/*"
+  for = "/assets/pdf/*"
   [headers.values]
     Cache-Control = "public, max-age=86400"
+
+# The brochures used to live in /materialy/. Anyone who saved or shared one
+# of those links keeps it working.
+[[redirects]]
+  from = "/materialy/*"
+  to = "/assets/pdf/:splat"
+  status = 301
+  force = true
 
 # Working documents stay out of search results.
 [[headers]]

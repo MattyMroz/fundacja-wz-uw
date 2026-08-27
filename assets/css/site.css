@@ -1158,7 +1158,7 @@ ul.clean li::before {
   color: #fff;
   text-decoration: underline;
   text-underline-offset: 4px;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 .enroll-box .mail:hover { color: var(--sky-2); }
 .enroll-box .addr { font-size: var(--fs-sm); color: var(--sky-2); margin-top: .5rem; }
@@ -1210,7 +1210,7 @@ footer {
   align-items: center;
   min-height: 2.25rem;
   font-size: var(--fs-sm);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 .foot a:hover { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
 .foot-bottom {
@@ -1242,6 +1242,7 @@ footer {
 .link { color: var(--blue); text-decoration: underline; text-underline-offset: 3px; font-weight: 600; }
 .link:hover { color: var(--blue-deep); }
 .meta-line { font-size: var(--fs-xs); color: var(--ink-3); }
+.nowrap { white-space: nowrap; }
 .stack-lg > * + * { margin-top: clamp(1.25rem, 3vw, 1.75rem); }
 
 .err-actions {
