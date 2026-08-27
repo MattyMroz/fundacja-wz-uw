@@ -419,7 +419,7 @@ ul.clean li::before {
   max-width: var(--wrap);
   margin-inline: auto;
 }
-.mnav a {
+.mnav a:not(.btn) {
   display: flex;
   align-items: center;
   min-height: 3rem;
@@ -429,8 +429,8 @@ ul.clean li::before {
   font-size: var(--fs-sm);
   font-weight: 500;
 }
-.mnav a:hover { color: var(--navy); }
-.mnav a[aria-current="page"] { color: var(--navy); font-weight: 700; }
+.mnav a:not(.btn):hover { color: var(--navy); }
+.mnav a:not(.btn)[aria-current="page"] { color: var(--navy); font-weight: 700; }
 .mnav .btn { margin-top: .875rem; }
 .mnav .btn ~ .btn { margin-top: .5rem; }
 .mnav a.btn { border-bottom: none; }
