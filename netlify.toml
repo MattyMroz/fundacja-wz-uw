@@ -1,0 +1,91 @@
+# Netlify configuration. The site is static and has no build step, so this
+# file only carries headers and context rules.
+
+[build]
+  publish = "."
+
+# ---------------------------------------------------------------------------
+# Security headers for every page.
+# The CSP needs no 'unsafe-inline': all CSS lives in assets/css/site.css, all
+# behaviour in assets/js/site.js, and no element carries a style or onclick
+# attribute. connect-src 'self' is required by the form submission (fetch to
+# the site root); form-action 'self' by the no-JavaScript POST fallback.
+# ---------------------------------------------------------------------------
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; img-src 'self' data:; style-src 'self'; script-src 'self'; font-src 'self'; connect-src 'self'; form-action 'self'; manifest-src 'self'; upgrade-insecure-requests"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"
+    Cross-Origin-Opener-Policy = "same-origin"
+    Cross-Origin-Resource-Policy = "same-origin"
+
+    # HSTS is deliberately NOT set here. Sending it is a one-year, one-way
+    # commitment for the domain and every subdomain. Enable it only after
+    # confirming that fundacjawzuw.pl, www.fundacjawzuw.pl and every other
+    # subdomain answer over HTTPS (see docs/TODO.md, item A3), by adding:
+    #   Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+
+# ---------------------------------------------------------------------------
+# Caching. Fonts and images never change in place - a new version gets a new
+# file name - so they can be cached for a year. CSS and JS are revalidated on
+# every visit (ETag, so a 304 with no body); that keeps a style fix from being
+# stuck in someone's browser cache.
+# ---------------------------------------------------------------------------
+[[headers]]
+  for = "/assets/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/assets/img/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/assets/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/assets/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/materialy/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+# Working documents stay out of search results.
+[[headers]]
+  for = "/docs/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/*.md"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+# ---------------------------------------------------------------------------
+# Preview and branch deploys must never compete with production in search.
+# ---------------------------------------------------------------------------
+[context.deploy-preview]
+  [[context.deploy-preview.headers]]
+    for = "/*"
+    [context.deploy-preview.headers.values]
+      X-Robots-Tag = "noindex, nofollow"
+
+[context.branch-deploy]
+  [[context.branch-deploy.headers]]
+    for = "/*"
+    [context.branch-deploy.headers.values]
+      X-Robots-Tag = "noindex, nofollow"

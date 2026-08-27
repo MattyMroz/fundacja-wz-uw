@@ -1,59 +1,124 @@
-/* Shared behaviour for all pages. Every block exits quietly when its elements
-   are absent, because one file serves all six pages. */
+/* Shared behaviour for every page. No dependencies, no inline handlers, so
+   the site runs under a CSP without 'unsafe-inline'. Each block exits
+   quietly when its elements are absent - one file serves all seven pages. */
 
-/* Mobile menu: toggle #mnav, keep aria-expanded and the button glyph in sync. */
 (function () {
-  var btn = document.querySelector('.menu-btn');
-  var nav = document.getElementById('mnav');
-  if (!btn || !nav) return;
-  btn.addEventListener('click', function () {
-    var open = nav.classList.toggle('open');
-    btn.setAttribute('aria-expanded', open);
-    btn.textContent = open ? '\u2715' : '\u2630';
-  });
-  Array.prototype.forEach.call(nav.querySelectorAll('a'), function (a) {
-    a.addEventListener('click', function () {
-      nav.classList.remove('open');
+  'use strict';
+
+  /* ---- Mobile menu ---------------------------------------------------
+     Opens #mnav, keeps aria-expanded in sync, closes on Escape (returning
+     focus to the button), on outside click, on link activation and when
+     the viewport grows past the desktop breakpoint. */
+  var menuBtn = document.querySelector('.menu-btn');
+  var mnav = document.getElementById('mnav');
+
+  if (menuBtn && mnav) {
+    var desktop = window.matchMedia('(min-width: 66em)');
+
+    var setMenu = function (open) {
+      mnav.classList.toggle('is-open', open);
+      menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+    var isOpen = function () {
+      return menuBtn.getAttribute('aria-expanded') === 'true';
+    };
+
+    menuBtn.addEventListener('click', function () {
+      setMenu(!isOpen());
     });
-  });
-})();
 
-/* "Do pobrania" tiles: the link works when the file is present in materialy/.
-   A missing document is marked "Wkrotce" instead of leading to a 404. */
-(function () {
-  var tiles = document.querySelectorAll('.dl a[download]');
-  Array.prototype.forEach.call(tiles, function (a) {
-    var href = a.getAttribute('href');
-    if (!href) return;
-    fetch(href, { method: 'HEAD' }).then(function (res) {
-      if (res.ok) return;
-      a.classList.add('dl-soon');
-      a.removeAttribute('href');
-      a.removeAttribute('download');
-      a.setAttribute('aria-disabled', 'true');
-      var title = a.querySelector('.t');
-      if (title && !title.querySelector('.badge-soon')) {
-        var badge = document.createElement('span');
-        badge.className = 'badge-soon';
-        badge.textContent = 'Wkr\u00f3tce';
-        title.appendChild(badge);
+    mnav.addEventListener('click', function (event) {
+      if (event.target.closest('a')) setMenu(false);
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && isOpen()) {
+        setMenu(false);
+        menuBtn.focus();
       }
-    }).catch(function () { /* no response - keep the link working */ });
-  });
-})();
+    });
 
-/* Newsletter: moved here unchanged from index.html. Known to be unreliable
-   (mailto plus an unconditional redirect); replaced by Netlify Forms in stage 3. */
-(function () {
-  var f = document.getElementById('nlForm');
-  if (!f) return;
-  f.addEventListener('submit', function (e) {
-    e.preventDefault();
-    var imie = (f.imie && f.imie.value || '').trim();
-    var email = (f.email && f.email.value || '').trim();
-    var s = encodeURIComponent('Zapis do newslettera Fundacji WZ UW');
-    var b = encodeURIComponent('Prosze o zapisanie mnie do newslettera Fundacji na rzecz Wydzialu Zarzadzania UW.\n\nImie: ' + imie + '\nAdres e-mail: ' + email + '\n\nOswiadczam, ze zapoznalem/-am sie z Polityka prywatnosci oraz wyrazam zgode na otrzymywanie newslettera i informacji handlowych droga elektroniczna.');
-    window.location.href = 'mailto:kontakt@fundacjawzuw.pl?subject=' + s + '&body=' + b;
-    setTimeout(function () { window.location.href = 'dziekujemy.html'; }, 400);
+    document.addEventListener('click', function (event) {
+      if (!isOpen()) return;
+      if (event.target.closest('#mnav') || event.target.closest('.menu-btn')) return;
+      setMenu(false);
+    });
+
+    var onBreakpoint = function (event) {
+      if (event.matches) setMenu(false);
+    };
+    if (desktop.addEventListener) desktop.addEventListener('change', onBreakpoint);
+    else desktop.addListener(onBreakpoint);
+  }
+
+  /* ---- Sticky header shade -------------------------------------------
+     A hairline shadow appears once the page is scrolled, so the sticky bar
+     stays readable over content. Throttled with requestAnimationFrame. */
+  var topbar = document.querySelector('.topbar');
+  if (topbar) {
+    var ticking = false;
+    var syncShade = function () {
+      topbar.classList.toggle('is-stuck', window.scrollY > 4);
+      ticking = false;
+    };
+    window.addEventListener('scroll', function () {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(syncShade);
+    }, { passive: true });
+    syncShade();
+  }
+
+  /* ---- Netlify Forms submission ---------------------------------------
+     The form posts normally without JavaScript (method="POST",
+     action="/dziekujemy.html"). With JavaScript we post the same payload
+     over fetch so a failed request shows an error instead of a thank-you
+     page - the exact case that used to fail silently. */
+  var encode = function (formData) {
+    var pairs = [];
+    formData.forEach(function (value, key) {
+      pairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
+    });
+    return pairs.join('&');
+  };
+
+  Array.prototype.forEach.call(document.querySelectorAll('form[data-form]'), function (form) {
+    var button = form.querySelector('button[type="submit"]');
+    var message = form.querySelector('[data-form-msg]');
+    var buttonLabel = button ? button.textContent : '';
+
+    var fail = function () {
+      if (!message) return;
+      message.className = 'form-msg is-error';
+      message.innerHTML = 'Nie udało się wysłać zgłoszenia. Sprawdź połączenie i spróbuj ponownie ' +
+        'albo napisz bezpośrednio na <a href="mailto:kontakt@fundacjawzuw.pl">kontakt@fundacjawzuw.pl</a>.';
+      message.focus();
+    };
+
+    form.addEventListener('submit', function (event) {
+      if (!form.checkValidity()) return;
+      event.preventDefault();
+
+      if (message) message.className = 'form-msg';
+      if (button) {
+        button.disabled = true;
+        button.textContent = 'Wysyłanie…';
+      }
+
+      fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: encode(new FormData(form))
+      }).then(function (response) {
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        window.location.assign(form.getAttribute('action') || 'dziekujemy.html');
+      }).catch(function () {
+        if (button) {
+          button.disabled = false;
+          button.textContent = buttonLabel;
+        }
+        fail();
+      });
+    });
   });
 })();

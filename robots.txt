@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Working documents and the form confirmation page carry no search value.
+Disallow: /docs/
+Disallow: /dziekujemy.html
+Disallow: /*.md$
+
+Sitemap: https://fundacjawzuw.pl/sitemap.xml
