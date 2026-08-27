@@ -361,3 +361,7 @@ docs/
 !.nvmrc
 !.gitignore
 !.gitattributes
+
+# Site artwork: the preset ignores image formats, but these files are the
+# published assets of this project.
+!assets/img/*.avif
