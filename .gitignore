@@ -286,20 +286,9 @@ logs/
 # Everything after this section overrides templates, which is the point.
 
 # ── Project-specific — static site on Netlify ─────────────────────────────────
-# Netlify CLI local state (site ID link, dev server cache)
-.netlify/
-
-# Locally generated audit reports
 lighthouse-report.*
 .lighthouseci/
 *.lighthouse.json
-
-# Intermediate files from decoding base64 images out of the HTML
-tmp-img/
-
-# Backups taken before bulk HTML edits
-*.html.bak
-*.html.orig
 
 # ── Re-includes ───────────────────────────────────────────────────────────────
 # Every keeper lives HERE, not next to the rule it escapes — a template pasted
@@ -344,6 +333,7 @@ tmp-img/
 !public/**/*.webp
 !public/**/*.svg
 !public/**/*.ico
+!favicon.ico
 !docs/**/*.png
 !docs/**/*.jpg
 !docs/**/*.svg
@@ -354,9 +344,8 @@ tmp-img/
 !**/fixtures/**
 
 # ── Project overrides — ignores that must beat the re-includes above ──────────
-# Working docs (audit, plan, report, client questions) stay local. Netlify serves
-# the whole repo with no build step, so any committed file is reachable under the
-# production domain. Beats `!docs/` in the re-includes section — last match wins.
+# Netlify serves the whole repo with no build step, so anything committed is
+# publicly reachable under the domain. Keep working docs out.
 docs/
 
 # ── Final invariants — MUST STAY LAST ─────────────────────────────────────────
