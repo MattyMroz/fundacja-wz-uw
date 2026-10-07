@@ -1002,8 +1002,20 @@ ul.clean li::before {
   box-shadow: var(--shadow-xs);
   transition: border-color var(--dur) ease, box-shadow var(--dur) ease, transform var(--dur) ease;
 }
+.dl a:not(.dl-soon)::after {
+  content: "";
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-left: auto;
+  background-color: var(--ink-3);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4v11m-5-5 5 5 5-5M5 20h14'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4v11m-5-5 5 5 5-5M5 20h14'/%3E%3C/svg%3E") center / contain no-repeat;
+  transition: background-color var(--dur) ease;
+}
 @media (hover: hover) {
   .dl a:hover { border-color: var(--blue); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+  .dl a:hover::after { background-color: var(--blue); }
 }
 .dl .ic {
   display: flex;
