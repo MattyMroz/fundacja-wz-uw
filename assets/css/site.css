@@ -264,6 +264,8 @@ ul.clean li::before {
 .btn-block { width: 100%; }
 .btn[disabled] { opacity: .6; cursor: progress; }
 
+.enroll-bar { display: none; }
+
 .enroll-bar {
   background: var(--navy);
   color: #fff;
