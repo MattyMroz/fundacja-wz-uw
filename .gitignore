@@ -13,6 +13,7 @@
 .claude/*
 .codex/*
 .agents/
+.worktrees/*
 
 # ── AI agents: other tools — uncomment what you use ───────────────────────────
 # .cursor/*
@@ -42,6 +43,8 @@
 credentials.json
 secrets.json
 secrets.enc
+*-token.txt
+*.token
 
 # ── Python (uv) ───────────────────────────────────────────────────────────────
 __pycache__/
@@ -289,6 +292,7 @@ logs/
 lighthouse-report.*
 .lighthouseci/
 *.lighthouse.json
+.agent-skills
 
 # ── Re-includes ───────────────────────────────────────────────────────────────
 # Every keeper lives HERE, not next to the rule it escapes — a template pasted
@@ -300,7 +304,8 @@ lighthouse-report.*
 !.claude/
 !.claude/settings.json
 !.claude/commands/
-!.codex/hooks.json
+!.worktrees/
+!.worktrees/.gitkeep
 !.vscode/
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -333,7 +338,6 @@ lighthouse-report.*
 !public/**/*.webp
 !public/**/*.svg
 !public/**/*.ico
-!favicon.ico
 !docs/**/*.png
 !docs/**/*.jpg
 !docs/**/*.svg
@@ -341,7 +345,22 @@ lighthouse-report.*
 # Test fixtures — small by definition, and the tests need them in git
 !**/fixtures/
 !**/fixtures/**/
-!**/fixtures/**
+!**/fixtures/**/*.csv
+!**/fixtures/**/*.tsv
+!**/fixtures/**/*.parquet
+!**/fixtures/**/*.png
+!**/fixtures/**/*.jpg
+!**/fixtures/**/*.jpeg
+!**/fixtures/**/*.webp
+!**/fixtures/**/*.gif
+!**/fixtures/**/*.ico
+!**/fixtures/**/*.zip
+!**/fixtures/**/*.bin
+
+# Site artwork and favicon: the preset ignores image formats, but these files
+# are the published assets of this project.
+!favicon.ico
+!assets/img/*.avif
 
 # ── Project overrides — ignores that must beat the re-includes above ──────────
 # Netlify serves the whole repo with no build step, so anything committed is
@@ -361,8 +380,3 @@ docs/
 !.nvmrc
 !.gitignore
 !.gitattributes
-
-# Site artwork: the preset ignores image formats, but these files are the
-# published assets of this project.
-!assets/img/*.avif
-.agent-skills
