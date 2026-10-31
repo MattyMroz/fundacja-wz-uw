@@ -292,7 +292,6 @@ logs/
 lighthouse-report.*
 .lighthouseci/
 *.lighthouse.json
-.agent-skills
 
 # ── Re-includes ───────────────────────────────────────────────────────────────
 # Every keeper lives HERE, not next to the rule it escapes — a template pasted

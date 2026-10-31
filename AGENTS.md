@@ -12,7 +12,7 @@ Statyczna strona Fundacji na rzecz Wydziału Zarządzania UW (Centrum Edukacji: 
 
 ## Reguły
 
-- Netlify publikuje cały korzeń repo (`publish = "."`, `deploy --dir .`): wszystko, co jest zacommitowane, jest publicznie dostępne pod domeną. Robocze dokumenty trzymaj w `docs/` (ignorowane przez `.gitignore`).
+- Netlify publikuje cały korzeń repo (`publish = "."`, `deploy --dir .`): wszystko, co jest zacommitowane, jest publicznie dostępne pod domeną, poza `AGENTS.md`, który `netlify.toml` zwraca jako 404. Robocze dokumenty trzymaj w `docs/` (ignorowane przez `.gitignore`).
 - CSP w `netlify.toml` zabrania inline: żadnych atrybutów `style` i `onclick`, żadnych bloków `<style>` ani wykonywalnych `<script>` w HTML (dane JSON-LD są dozwolone). Style idą do `site.css`, zachowanie do `site.js`.
 - Formularze (`newsletter`, `zgloszenie-spf`, `zgloszenie-ai`) wysyłają `fetch` na korzeń strony, a bez JS zwykły POST do `dziekujemy.html`; `connect-src` i `form-action` w CSP to `'self'`.
 - Czcionki i obrazy są cache'owane na rok jako niezmienne: nową wersję zapisuj pod nową nazwą pliku.
