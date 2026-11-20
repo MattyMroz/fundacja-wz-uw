@@ -1,10 +1,10 @@
 # fundacja-wz-uw
 
-Statyczna strona Fundacji na rzecz Wydziału Zarządzania UW (Centrum Edukacji: Szkoła Prawa Farmaceutycznego, szkolenie AI). Czyste HTML, CSS i JS, bez kroku budowania i bez manifestu pakietów.
+Statyczna strona Fundacji na rzecz Wydziału Zarządzania UW (Centrum Edukacji: Szkoła Prawa Farmaceutycznego, szkolenie AI; podstrona Studium Menedżer CC i CX, którego organizatorem jest PSMB). Czyste HTML, CSS i JS, bez kroku budowania i bez manifestu pakietów.
 
 ## Mapa
 
-- Korzeń: strony `*.html` po polsku (`index`, `o-fundacji`, `szkola-prawa-farmaceutycznego`, `szkolenie-ai`, `polityka-prywatnosci`, `dziekujemy`, `404`), `robots.txt`, `sitemap.xml`, `site.webmanifest`, `favicon.ico`.
+- Korzeń: strony `*.html` po polsku (`index`, `o-fundacji`, `szkola-prawa-farmaceutycznego`, `szkolenie-ai`, `studium-menedzer-cc-cx`, `polityka-prywatnosci`, `dziekujemy`, `404`), `robots.txt`, `sitemap.xml`, `site.webmanifest`, `favicon.ico`.
 - `assets/css/site.css`, `assets/js/site.js`: jeden arkusz i jeden skrypt dla wszystkich stron.
 - `assets/fonts/`, `assets/img/`, `assets/pdf/`: czcionki, obrazy i broszury (stare linki `/materialy/*` przekierowuje `netlify.toml`).
 - `netlify.toml`: nagłówki bezpieczeństwa, cache i przekierowania.
@@ -14,7 +14,7 @@ Statyczna strona Fundacji na rzecz Wydziału Zarządzania UW (Centrum Edukacji: 
 
 - Netlify publikuje cały korzeń repo (`publish = "."`, `deploy --dir .`): wszystko, co jest zacommitowane, jest publicznie dostępne pod domeną, poza `AGENTS.md`, który `netlify.toml` zwraca jako 404. Robocze dokumenty trzymaj w `docs/` (ignorowane przez `.gitignore`).
 - CSP w `netlify.toml` zabrania inline: żadnych atrybutów `style` i `onclick`, żadnych bloków `<style>` ani wykonywalnych `<script>` w HTML (dane JSON-LD są dozwolone). Style idą do `site.css`, zachowanie do `site.js`.
-- Formularze (`newsletter`, `zgloszenie-spf`, `zgloszenie-ai`) wysyłają `fetch` na korzeń strony, a bez JS zwykły POST do `dziekujemy.html`; `connect-src` i `form-action` w CSP to `'self'`.
+- Formularze (`newsletter`, `zgloszenie-spf`, `zgloszenie-ai`, `zgloszenie-studium`) wysyłają `fetch` na korzeń strony, a bez JS zwykły POST do `dziekujemy.html`; `connect-src` i `form-action` w CSP to `'self'`. Zgłoszenia `zgloszenie-studium` trafiają do organizatora (PSMB): powiadomienie e-mail ustawia się w panelu Netlify, nie w kodzie.
 - Czcionki i obrazy są cache'owane na rok jako niezmienne: nową wersję zapisuj pod nową nazwą pliku.
 
 ## Git

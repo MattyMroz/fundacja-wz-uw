@@ -1,9 +1,16 @@
 /* Shared behaviour for every page. No dependencies, no inline handlers, so
    the site runs under a CSP without 'unsafe-inline'. Each block exits
-   quietly when its elements are absent - one file serves all seven pages. */
+   quietly when its elements are absent - one file serves every page. */
 
 (function () {
   'use strict';
+
+  /* The breakpoint matches the desktop @media block in site.css. */
+  var desktop = window.matchMedia('(min-width: 56em)');
+  var onBreakpoint = function (handler) {
+    if (desktop.addEventListener) desktop.addEventListener('change', handler);
+    else desktop.addListener(handler);
+  };
 
   /* ---- Mobile menu ---------------------------------------------------
      Opens #mnav, keeps aria-expanded in sync, closes on Escape (returning
@@ -13,8 +20,6 @@
   var mnav = document.getElementById('mnav');
 
   if (menuBtn && mnav) {
-    var desktop = window.matchMedia('(min-width: 66em)');
-
     var setMenu = function (open) {
       mnav.classList.toggle('is-open', open);
       menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
@@ -44,11 +49,73 @@
       setMenu(false);
     });
 
-    var onBreakpoint = function (event) {
+    onBreakpoint(function (event) {
       if (event.matches) setMenu(false);
+    });
+  }
+
+  /* ---- Programmes dropdown ---------------------------------------------
+     The "Programy" button opens .navdrop-panel. Click, Enter and Space
+     toggle it; Escape, an outside click, focus leaving the dropdown and
+     the switch to the mobile menu close it. A mouse hover opens it and
+     closes it 200 ms after the pointer leaves, so crossing the gap to the
+     panel does not flicker; a click while hover-open keeps it open.
+     Without JavaScript .is-ready is missing and site.css opens the panel
+     on hover and focus-within instead. */
+  var drop = document.querySelector('.navdrop');
+
+  if (drop) {
+    var dropBtn = drop.querySelector('.navdrop-btn');
+    var closeTimer = 0;
+    var openedByHover = false;
+
+    var setDrop = function (open, byHover) {
+      window.clearTimeout(closeTimer);
+      openedByHover = open && byHover === true;
+      dropBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
     };
-    if (desktop.addEventListener) desktop.addEventListener('change', onBreakpoint);
-    else desktop.addListener(onBreakpoint);
+    var dropOpen = function () {
+      return dropBtn.getAttribute('aria-expanded') === 'true';
+    };
+
+    drop.classList.add('is-ready');
+
+    dropBtn.addEventListener('click', function () {
+      if (openedByHover) setDrop(true);
+      else setDrop(!dropOpen());
+    });
+
+    drop.addEventListener('pointerenter', function (event) {
+      if (event.pointerType !== 'mouse') return;
+      window.clearTimeout(closeTimer);
+      if (!dropOpen()) setDrop(true, true);
+    });
+
+    drop.addEventListener('pointerleave', function (event) {
+      if (event.pointerType !== 'mouse' || !openedByHover) return;
+      closeTimer = window.setTimeout(function () {
+        setDrop(false);
+      }, 200);
+    });
+
+    drop.addEventListener('focusout', function (event) {
+      if (event.relatedTarget && !drop.contains(event.relatedTarget)) setDrop(false);
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key !== 'Escape' || !dropOpen()) return;
+      var hadFocus = drop.contains(document.activeElement);
+      setDrop(false);
+      if (hadFocus) dropBtn.focus();
+    });
+
+    document.addEventListener('click', function (event) {
+      if (dropOpen() && !drop.contains(event.target)) setDrop(false);
+    });
+
+    onBreakpoint(function (event) {
+      if (!event.matches) setDrop(false);
+    });
   }
 
   /* ---- Sticky header shade -------------------------------------------
