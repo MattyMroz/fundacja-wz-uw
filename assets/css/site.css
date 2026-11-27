@@ -819,6 +819,8 @@ ul.clean li::before {
   font-weight: 600;
   color: var(--navy);
 }
+.date-card .s { font-size: var(--fs-2xs); color: var(--ink-2); margin-top: .25rem; }
+.date-card-lead { border-color: var(--sky-2); background: #EEF4FB; }
 
 .callout {
   border-top: 2px solid var(--navy);
@@ -1119,13 +1121,15 @@ ul.clean li::before {
 .form input::placeholder,
 .form textarea::placeholder { color: #9AA3B5; }
 .form input:focus-visible,
-.form textarea:focus-visible {
+.form textarea:focus-visible,
+.form select:focus-visible {
   outline: none;
   border-color: var(--blue);
   box-shadow: var(--ring);
 }
 .form input:user-invalid,
-.form textarea:user-invalid { border-color: var(--red); }
+.form textarea:user-invalid,
+.form select:user-invalid { border-color: var(--red); }
 
 .consent {
   display: grid;
