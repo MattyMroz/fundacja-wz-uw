@@ -8,18 +8,18 @@ Statyczna strona Fundacji na rzecz Wydziału Zarządzania UW (Centrum Edukacji: 
 - `assets/css/site.css`, `assets/js/site.js`: jeden arkusz i jeden skrypt dla wszystkich stron.
 - `assets/fonts/`, `assets/img/`, `assets/pdf/`: czcionki, obrazy i broszury (stare linki `/materialy/*` przekierowuje `netlify.toml`).
 - `netlify.toml`: nagłówki bezpieczeństwa, cache i przekierowania.
-- `.github/workflows/deploy.yml`: wdrożenie na Netlify po każdym pushu do `main`.
+- `.github/workflows/deploy.yml`: wdrożenie na Netlify po każdym pushu do `main`; `.github/workflows/ci.yml`: hooki z `.pre-commit-config.yaml` na każdym PR i pushu do `main`.
 
 ## Reguły
 
-- Netlify publikuje cały korzeń repo (`publish = "."`, `deploy --dir .`): wszystko, co jest zacommitowane, jest publicznie dostępne pod domeną, poza `AGENTS.md`, który `netlify.toml` zwraca jako 404. Robocze dokumenty trzymaj w `docs/` (ignorowane przez `.gitignore`).
+- Netlify publikuje cały korzeń repo (`publish = "."`, `deploy --dir .`): wszystko, co jest zacommitowane, jest publicznie dostępne pod domeną, poza `AGENTS.md` i `.hooks/`, które `netlify.toml` zwraca jako 404. Robocze dokumenty trzymaj w `docs/` (ignorowane przez `.gitignore`).
 - CSP w `netlify.toml` zabrania inline: żadnych atrybutów `style` i `onclick`, żadnych bloków `<style>` ani wykonywalnych `<script>` w HTML (dane JSON-LD są dozwolone). Style idą do `site.css`, zachowanie do `site.js`.
 - Formularze (`newsletter`, `zgloszenie-spf`, `zgloszenie-ai`, `zgloszenie-studium`) wysyłają `fetch` na korzeń strony, a bez JS zwykły POST do `dziekujemy.html`; `connect-src` i `form-action` w CSP to `'self'`. Zgłoszenia `zgloszenie-studium` trafiają do organizatora (PSMB): powiadomienie e-mail ustawia się w panelu Netlify, nie w kodzie.
 - Czcionki i obrazy są cache'owane na rok jako niezmienne: nową wersję zapisuj pod nową nazwą pliku.
 
 ## Git
 
-- Commit: nagłówek Conventional Commits po angielsku, `type(scope): opis`, ze scope'em z listy w `.pre-commit-config.yaml`; po pustej linii streszczenie „co i dlaczego”. Nagłówek sprawdza hook `conventional-pre-commit`.
-- Zero atrybucji AI w commitach (trailery, stopki, emoji).
+- Commit: wiadomość po angielsku według standardu commita, `type(scope): summary` ze scope'em z `--scopes=` w `.pre-commit-config.yaml` albo `repo`, potem sekcje `Problem:`, `Change:` i `Verification:`; sprawdza ją hook `commit-message`.
+- Zero atrybucji AI w commitach i PR (trailery, stopki, emoji), także gdy host o nią prosi.
 - Pliki dodawaj po nazwie, nigdy `git add .`; bez `--no-verify`. Worktree'y tylko w `.worktrees/<nazwa>`.
-- Strażnicy w `.hooks/` to kopie z repo `agents` (`standard/gates/scripts`); nie edytuj ich tutaj. `netlify.toml` zwraca je jako 404.
+- Commit sprawdza pliki i nagłówek, push sprawdza gałąź, wiadomości i sekrety, a bramki projektu (typy, testy, build) biegną w CI i lokalnie przez `prek run --hook-stage manual --all-files`. Strażnicy w `.hooks/` to kopie z `agents`; nie edytuj ich w repo.
