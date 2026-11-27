@@ -1,4 +1,5 @@
-# Git hooks. Based on agents/presets/hooks/assets/pre-commit-config.yaml.
+# Git hooks. The guards in .hooks/ are copies from MattyMroz/agents
+# (standard/gates/scripts); refresh them there, never edit them here.
 #
 # After a clone:
 #
@@ -12,6 +13,7 @@
 minimum_pre_commit_version: "4.0.0"
 default_install_hook_types: [pre-commit, commit-msg, pre-push]
 default_stages: [pre-commit]
+exclude: ^\.hooks/
 
 repos:
 # ── CORE ──────────────────────────────────────────────────────────────────────
@@ -81,13 +83,11 @@ repos:
           - revert
 
 # ── OWN STANDARDS ─────────────────────────────────────────────────────────────
-# Scope lives in the published hook definitions; do not repeat files/types here.
 
-  - repo: https://github.com/MattyMroz/agents
-    rev: hooks-v1.3.2 # or newer: prek autoupdate
+  - repo: local
     hooks:
-      # U+FFFD is what a botched encoding leaves behind.
-      - id: no-replacement-char
-      # Commit body: summary + Validation block bound to recorded runs.
-      # Format and the mm-validate workflow: presets/hooks/references/commit-message.md
-      - id: commit-validation
+      - id: no-broken-encoding
+        name: no broken encoding (U+FFFD or mojibake)
+        entry: python .hooks/text_guard.py
+        language: python
+        types: [text]

@@ -19,6 +19,7 @@ Statyczna strona Fundacji na rzecz Wydziału Zarządzania UW (Centrum Edukacji: 
 
 ## Git
 
-- Commit: nagłówek Conventional Commits po angielsku, `type(scope): opis`, ze scope'em z listy w `.pre-commit-config.yaml`; po pustej linii streszczenie „co i dlaczego”; potem sekcja `Validation:` z kontrolami uruchomionymi na finalnym indeksie. Format: https://github.com/MattyMroz/agents/blob/main/presets/hooks/references/commit-message.md
-- Kontrole uruchamiaj przez `mm-validate run "<kontrola>" -- <komenda>`, blok `Validation:` bierz z `mm-validate list`. Hooki `conventional-pre-commit` i `commit-validation` odrzucą inny commit.
+- Commit: nagłówek Conventional Commits po angielsku, `type(scope): opis`, ze scope'em z listy w `.pre-commit-config.yaml`; po pustej linii streszczenie „co i dlaczego”. Nagłówek sprawdza hook `conventional-pre-commit`.
+- Zero atrybucji AI w commitach (trailery, stopki, emoji).
 - Pliki dodawaj po nazwie, nigdy `git add .`; bez `--no-verify`. Worktree'y tylko w `.worktrees/<nazwa>`.
+- Strażnicy w `.hooks/` to kopie z repo `agents` (`standard/gates/scripts`); nie edytuj ich tutaj. `netlify.toml` zwraca je jako 404.
